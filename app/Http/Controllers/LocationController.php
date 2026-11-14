@@ -25,7 +25,7 @@ class LocationController extends Controller
     public function getProvinces($idRegion)
     {
         // Filtrar provincias cuyo idDistrito comienza con los mismos caracteres de idRegion
-        $provinces = Province::whereRaw('LEFT(idProvincia, 2) = ?', [$idRegion])->get();
+        $provinces = Province::whereRaw('SUBSTR(idProvincia, 1, 2) = ?', [$idRegion])->get();
 
         if ($provinces->isEmpty()) {
             return response()->json([
@@ -44,7 +44,7 @@ class LocationController extends Controller
     public function getDistricts($idProvince)
     {
         // Filtrar distritos cuyo idDistrito comienza con los mismos caracteres de idProvincia
-        $districts = District::whereRaw('LEFT(idDistrito, 4) = ?', [$idProvince])->get();
+        $districts = District::whereRaw('SUBSTR(idDistrito, 1, 4) = ?', [$idProvince])->get();
 
         if ($districts->isEmpty()) {
             return response()->json([
