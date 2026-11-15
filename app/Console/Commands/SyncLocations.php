@@ -14,12 +14,8 @@ class SyncLocations extends Command
     protected $signature = 'sync:locations';
     protected $description = 'Sincroniza regiones, provincias, distritos y escuelas desde la API y las registra en la base de datos';
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
-    public function handle()
+    public function handle(): int
     {
         $this->info('Iniciando sincronización de ubicaciones...');
 
@@ -30,7 +26,7 @@ class SyncLocations extends Command
         return 0;
     }
 
-    private function syncRegions()
+    private function syncRegions(): void
     {
         $this->info('Sincronizando regiones...');
         $response = Http::withHeaders([
@@ -61,7 +57,7 @@ class SyncLocations extends Command
         $this->info('Regiones sincronizadas correctamente.');
     }
 
-    private function syncProvinces($regionId)
+    private function syncProvinces(string $regionId): void
     {
         $this->info("Sincronizando provincias para la región $regionId...");
         $response = Http::withHeaders([
@@ -104,7 +100,7 @@ class SyncLocations extends Command
         $this->info("Provincias para la región $regionId sincronizadas correctamente.");
     }
 
-    private function syncDistricts($provinceId)
+    private function syncDistricts(string $provinceId): void
     {
         $this->info("Sincronizando distritos para la provincia $provinceId...");
         $response = Http::withHeaders([
@@ -145,7 +141,7 @@ class SyncLocations extends Command
         $this->info("Distritos para la provincia $provinceId sincronizados correctamente.");
     }
 
-    private function syncSchools($districtId)
+    private function syncSchools(string $districtId): void
     {
         $this->info("Sincronizando escuelas para el distrito $districtId...");
         $response = Http::withHeaders([
