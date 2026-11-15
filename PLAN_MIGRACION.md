@@ -8,7 +8,7 @@ Curso: Arquitectura de Software (UNAS). Proyecto base: `https://github.com/hubel
 |---|---|---|
 | Versión destino | **Laravel 13** con **PHP 8.3 o superior** (en este equipo: **PHP 8.5.4**, el que trae Ubuntu 26.04) | Laravel 13 exige PHP 8.3 como mínimo y acepta hasta 8.5. Es la versión mayor actual. Plan B: Laravel 12 (acepta PHP 8.2-8.5). |
 | Estrategia | **Esqueleto limpio de Laravel 13 + portar el código propio** | Laravel 7 no arranca en PHP 8.1+. Subir 7→8→9→10→… obligaría a instalar varias versiones de PHP para probar cada salto. El código propio es pequeño (2 controladores, 1 comando, 4 modelos, 4 migraciones). |
-| Dónde trabajar | **WSL (Ubuntu 26.04), dentro de `~/proyectos`** (NO en `/mnt/c/...`) | Evita los bloqueos de Windows Defender y es mucho más rápido con Composer. |
+| Dónde trabajar | **WSL (Ubuntu 26.04), dentro de `~/migracionphp`** (NO en `/mnt/c/...`) | Evita los bloqueos de Windows Defender y es mucho más rápido con Composer. |
 | Git | Repo **nuevo e independiente** en tu GitHub, con el historial del original | El profesor pidió copiar el proyecto y trabajarlo en tu propio repo. |
 | Base de datos | MySQL en WSL (como el README original) | SQLite en memoria para los tests. |
 
@@ -36,7 +36,7 @@ Orden pedido por el profesor: plan → commits → pushear.
 
 ```bash
 # 3.1 Carpeta de trabajo dentro de Linux
-mkdir -p ~/proyectos && cd ~/proyectos
+mkdir -p ~/migracionphp && cd ~/migracionphp
 
 # 3.2 Paquetes base
 sudo apt update
@@ -84,7 +84,7 @@ gh auth login                       # elige GitHub.com → HTTPS → login con e
 
 ### Subir el proyecto (trae el historial del original)
 ```bash
-cd ~/proyectos
+cd ~/migracionphp
 git clone https://github.com/hubelsolis/brigesnote.git bridgesnote-migracion
 cd bridgesnote-migracion
 
@@ -103,18 +103,18 @@ git push origin laravel7-base
 
 Si Git pide contraseña por HTTPS: GitHub ya no acepta la contraseña de la cuenta. Usa `gh auth login` o un **Personal Access Token** (GitHub → Settings → Developer settings → Tokens) como contraseña.
 
-> Si recibes el proyecto como ZIP con mi trabajo previo (plan + test), descomprímelo en `~/proyectos/bridgesnote-migracion` y empieza desde `git remote remove origin`. Ese ZIP ya incluye `.git` con los commits.
+> Si recibes el proyecto como ZIP con mi trabajo previo (plan + test), descomprímelo en `~/migracionphp/bridgesnote-migracion` y empieza desde `git remote remove origin`. Ese ZIP ya incluye `.git` con los commits.
 
 ## 5. Migración paso a paso (un commit por etapa)
 
 ```bash
-cd ~/proyectos/bridgesnote-migracion
+cd ~/migracionphp/bridgesnote-migracion
 git switch -c migracion-laravel13
 ```
 
 ### Etapa 1: esqueleto limpio de Laravel 13
 ```bash
-cd ~/proyectos
+cd ~/migracionphp
 composer create-project laravel/laravel:^13.0 esqueleto-l13 --prefer-dist
 cd bridgesnote-migracion
 
@@ -239,7 +239,7 @@ Checklist de aceptación:
 | `No application encryption key` | `php artisan key:generate`. |
 | 404 en `/api/...` | Falta la línea `api:` en `bootstrap/app.php` (Etapa 3). |
 | `Class "App\Http\Controllers\Controller" not found` | Copiaste el `Controller.php` viejo o borraste el nuevo; usa el del esqueleto. |
-| Composer muy lento o archivos bloqueados | Estás en `/mnt/c/...`: mueve el proyecto a `~/proyectos`. |
+| Composer muy lento o archivos bloqueados | Estás en `/mnt/c/...`: mueve el proyecto a `~/migracionphp`. |
 
 ## 9. Prompt sugerido para el agente de IA
 
