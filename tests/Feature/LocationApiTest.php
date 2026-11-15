@@ -66,4 +66,13 @@ class LocationApiTest extends TestCase
             ->assertStatus(404)
             ->assertJsonPath('status', 'error');
     }
+
+    public function test_api_limita_a_60_peticiones_por_minuto(): void
+    {
+        for ($i = 0; $i < 60; $i++) {
+            $this->assertNotEquals(429, $this->getJson('/api/regiones')->status());
+        }
+
+        $this->getJson('/api/regiones')->assertStatus(429);
+    }
 }

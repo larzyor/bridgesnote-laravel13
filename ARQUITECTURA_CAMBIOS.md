@@ -102,3 +102,13 @@ git diff laravel7-base laravel13-ok --stat
 ## 9. Uso de agentes de IA
 
 La migración se hizo con apoyo de un asistente de IA, con autorización del docente. El detalle está en la sección "Uso de agentes de IA" del [`README.md`](README.md).
+
+## 10. Correcciones posteriores a la migración
+
+Una revisión posterior detectó dos puntos que la primera versión de este documento no recogía.
+
+**Límite de peticiones (rate limiting).** En Laravel 7 el grupo `api` incluía `throttle:60,1` por defecto en `app/Http/Kernel.php`. En Laravel 13 ese grupo ya no lo trae activado, así que al migrar se perdió el límite de 60 peticiones por minuto sin ningún error visible. Se corrigió en `bootstrap/app.php` y se agregó una prueba que verifica que la petición 61 responde 429.
+
+**Lección de arquitectura:** migrar el código propio no basta. Los grupos de middleware dejaron de vivir en `Kernel.php` y sus valores por defecto cambiaron, por lo que hay que revisar también los comportamientos que el framework daba por defecto.
+
+**Versión de PHP.** El `composer.lock` generado con PHP 8.5 incluía componentes de Symfony 8, que exigen PHP 8.4 o superior, por lo que el proyecto no instalaba en PHP 8.3. Se fijó `config.platform.php = 8.3.0` en `composer.json` y se regeneró el lock. Con ello el proyecto funciona en PHP 8.3, 8.4 y 8.5; las 8 pruebas pasan en PHP 8.3.36 y en PHP 8.5.4.
