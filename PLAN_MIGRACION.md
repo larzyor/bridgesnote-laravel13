@@ -1,4 +1,4 @@
-# Plan de migración: Bridges Note (Laravel 7 / PHP 7.x → Laravel 13 / PHP 8.3)
+# Plan de migración: Bridges Note (Laravel 7 / PHP 7.x → Laravel 13 / PHP 8.3+)
 
 Curso: Arquitectura de Software (UNAS). Proyecto base: `https://github.com/hubelsolis/brigesnote.git`
 
@@ -6,9 +6,9 @@ Curso: Arquitectura de Software (UNAS). Proyecto base: `https://github.com/hubel
 
 | Tema | Decisión | Motivo |
 |---|---|---|
-| Versión destino | **Laravel 13** con **PHP 8.3** | Laravel 13 exige PHP 8.3 como mínimo y es la versión mayor actual. Plan B: Laravel 12 (acepta PHP 8.2-8.5). |
+| Versión destino | **Laravel 13** con **PHP 8.3 o superior** (en este equipo: **PHP 8.5.4**, el que trae Ubuntu 26.04) | Laravel 13 exige PHP 8.3 como mínimo y acepta hasta 8.5. Es la versión mayor actual. Plan B: Laravel 12 (acepta PHP 8.2-8.5). |
 | Estrategia | **Esqueleto limpio de Laravel 13 + portar el código propio** | Laravel 7 no arranca en PHP 8.1+. Subir 7→8→9→10→… obligaría a instalar varias versiones de PHP para probar cada salto. El código propio es pequeño (2 controladores, 1 comando, 4 modelos, 4 migraciones). |
-| Dónde trabajar | **WSL (Ubuntu), dentro de `~/proyectos`** (NO en `/mnt/c/...`) | Evita los bloqueos de Windows Defender y es mucho más rápido con Composer. |
+| Dónde trabajar | **WSL (Ubuntu 26.04), dentro de `~/proyectos`** (NO en `/mnt/c/...`) | Evita los bloqueos de Windows Defender y es mucho más rápido con Composer. |
 | Git | Repo **nuevo e independiente** en tu GitHub, con el historial del original | El profesor pidió copiar el proyecto y trabajarlo en tu propio repo. |
 | Base de datos | MySQL en WSL (como el README original) | SQLite en memoria para los tests. |
 
@@ -32,7 +32,7 @@ Orden pedido por el profesor: plan → commits → pushear.
 3. Se marca el punto de partida con un tag (`laravel7-base`) para poder volver o comparar.
 4. Recién ahí se corre el agente de IA, siempre en una rama (`migracion-laravel13`) y con un commit por etapa.
 
-## 3. Preparar WSL (Ubuntu)
+## 3. Preparar WSL (Ubuntu 26.04)
 
 ```bash
 # 3.1 Carpeta de trabajo dentro de Linux
@@ -40,14 +40,13 @@ mkdir -p ~/proyectos && cd ~/proyectos
 
 # 3.2 Paquetes base
 sudo apt update
-sudo apt install -y git unzip curl ca-certificates software-properties-common
+sudo apt install -y git unzip curl ca-certificates
 
-# 3.3 PHP 8.3 y extensiones que necesita Laravel
-#   Ubuntu 24.04 ya trae PHP 8.3. En Ubuntu 22.04 primero agrega el PPA:
-#   sudo add-apt-repository -y ppa:ondrej/php && sudo apt update
-sudo apt install -y php8.3-cli php8.3-mbstring php8.3-xml php8.3-curl php8.3-zip \
-                    php8.3-mysql php8.3-sqlite3 php8.3-bcmath php8.3-intl
-php -v          # debe decir PHP 8.3.x
+# 3.3 PHP y extensiones que necesita Laravel
+#   Ubuntu 26.04 trae PHP 8.5 en sus repositorios (no hace falta PPA).
+sudo apt install -y php8.5-cli php8.5-mbstring php8.5-xml php8.5-curl php8.5-zip \
+                    php8.5-mysql php8.5-sqlite3 php8.5-bcmath php8.5-intl
+php -v          # debe decir PHP 8.5.x (Laravel 13 acepta 8.3 a 8.5)
 
 # 3.4 Composer 2
 curl -sS https://getcomposer.org/installer | php
@@ -65,6 +64,8 @@ sudo mysql -e "GRANT ALL PRIVILEGES ON escalebridge.* TO 'bridges'@'localhost'; 
 git config --global user.name  "Tu Nombre"
 git config --global user.email "tu-correo@ejemplo.com"
 ```
+
+> Si el profesor exige literalmente PHP 8.3: Ubuntu 26.04 no lo trae. Habría que instalarlo desde el repositorio de Ondřej Surý (el PPA tiene problemas de firma en 26.04) y fijarlo con `sudo update-alternatives --set php /usr/bin/php8.3`. Para este trabajo basta con 8.5, porque `composer.json` queda con `"php": "^8.3"`, que incluye 8.3, 8.4 y 8.5.
 
 ## 4. Crear tu repositorio nuevo en GitHub y subir el proyecto
 
@@ -210,7 +211,7 @@ curl http://127.0.0.1:8000/api/distritos/1501
 ```
 
 Checklist de aceptación:
-- [ ] `php -v` es 8.3 y `composer.json` pide `"php": "^8.3"` y `"laravel/framework": "^13.0"`
+- [ ] `php -v` es 8.3, 8.4 u 8.5 y `composer.json` pide `"php": "^8.3"` y `"laravel/framework": "^13.0"`
 - [ ] `php artisan test` en verde
 - [ ] `php artisan migrate:fresh` sin errores
 - [ ] Los 4 endpoints responden (200 con datos, 404 con mensaje si no hay resultados)
@@ -219,7 +220,7 @@ Checklist de aceptación:
 
 ## 7. Cierre y entrega
 
-1. Actualizar el `README.md`: requisitos (PHP 8.3, Laravel 13, Composer 2), pasos de instalación y quitar el aviso de "Laravel 7 no es compatible con PHP 8.1".
+1. Actualizar el `README.md`: requisitos (PHP 8.3 o superior, Laravel 13, Composer 2), pasos de instalación y quitar el aviso de "Laravel 7 no es compatible con PHP 8.1".
 2. Subir la rama y abrir un Pull Request:
    ```bash
    git push -u origin migracion-laravel13
@@ -232,6 +233,7 @@ Checklist de aceptación:
 | Síntoma | Causa y solución |
 |---|---|
 | `Your requirements could not be resolved` | PHP o extensiones faltantes: revisa `php -m` y la sección 3. |
+| `Unable to locate package php8.x-...` | Nombre mal escrito o versión que Ubuntu 26.04 no trae: usa `php8.5-...` o `apt search php8.5-`. |
 | `SQLSTATE[HY000] [2002] Connection refused` | MySQL apagado en WSL: `sudo service mysql start`. |
 | `Access denied for user` | El usuario/clave de `.env` no coinciden con los creados en 3.5. |
 | `No application encryption key` | `php artisan key:generate`. |
