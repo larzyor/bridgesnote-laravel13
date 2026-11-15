@@ -6,12 +6,12 @@ use App\Models\Region;
 use App\Models\Province;
 use App\Models\District;
 use App\Models\School;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class LocationController extends Controller
 {
     // Obtener todas las regiones desde la base de datos
-    public function getRegions()
+    public function getRegions(): JsonResponse
     {
         $regions = Region::all();
 
@@ -22,7 +22,7 @@ class LocationController extends Controller
     }
 
     // Obtener provincias de una región (según los dos primeros caracteres de idDistrito)
-    public function getProvinces($idRegion)
+    public function getProvinces(string $idRegion): JsonResponse
     {
         // Filtrar provincias cuyo idDistrito comienza con los mismos caracteres de idRegion
         $provinces = Province::whereRaw('SUBSTR(idProvincia, 1, 2) = ?', [$idRegion])->get();
@@ -41,7 +41,7 @@ class LocationController extends Controller
     }
 
     // Obtener distritos de una provincia (según los cuatro primeros caracteres de idDistrito)
-    public function getDistricts($idProvince)
+    public function getDistricts(string $idProvince): JsonResponse
     {
         // Filtrar distritos cuyo idDistrito comienza con los mismos caracteres de idProvincia
         $districts = District::whereRaw('SUBSTR(idDistrito, 1, 4) = ?', [$idProvince])->get();
@@ -60,7 +60,7 @@ class LocationController extends Controller
     }
 
     // Obtener escuelas de un distrito (según idDistrito completo)
-    public function getSchools($districtId)
+    public function getSchools(string $districtId): JsonResponse
     {
         $schools = School::where('idDistrito', $districtId)->get();
 
