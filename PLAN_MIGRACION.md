@@ -71,10 +71,10 @@ git config --global user.email "tu-correo@ejemplo.com"
 
 ### Opción A: desde la web
 1. Entra a GitHub → botón **New repository**.
-2. **Repository name**: por ejemplo `bridgesnote-laravel13`.
+2. **Repository name**: por ejemplo `bridgesnote-migracion`.
 3. Elige **Private** o **Public** (según pida el profesor).
 4. **No** marques "Add a README", ".gitignore" ni "license": el repo debe quedar vacío.
-5. Pulsa **Create repository** y copia la URL (`https://github.com/TU_USUARIO/bridgesnote-laravel13.git`).
+5. Pulsa **Create repository** y copia la URL (`https://github.com/TU_USUARIO/bridgesnote-migracion.git`).
 
 ### Opción B: con GitHub CLI
 ```bash
@@ -85,12 +85,12 @@ gh auth login                       # elige GitHub.com → HTTPS → login con e
 ### Subir el proyecto (trae el historial del original)
 ```bash
 cd ~/proyectos
-git clone https://github.com/hubelsolis/brigesnote.git bridgesnote-laravel13
-cd bridgesnote-laravel13
+git clone https://github.com/hubelsolis/brigesnote.git bridgesnote-migracion
+cd bridgesnote-migracion
 
 # Desconectar del repo del profesor y conectar con el tuyo
 git remote remove origin
-git remote add origin https://github.com/TU_USUARIO/bridgesnote-laravel13.git
+git remote add origin https://github.com/TU_USUARIO/bridgesnote-migracion.git
 git branch -M main
 
 # Punto de partida
@@ -99,16 +99,16 @@ git push -u origin main
 git push origin laravel7-base
 ```
 (Con la Opción B, en vez de `remote add` + `push` puedes usar:
-`gh repo create bridgesnote-laravel13 --private --source=. --remote=origin --push`.)
+`gh repo create bridgesnote-migracion --private --source=. --remote=origin --push`.)
 
 Si Git pide contraseña por HTTPS: GitHub ya no acepta la contraseña de la cuenta. Usa `gh auth login` o un **Personal Access Token** (GitHub → Settings → Developer settings → Tokens) como contraseña.
 
-> Si recibes el proyecto como ZIP con mi trabajo previo (plan + test), descomprímelo en `~/proyectos/bridgesnote-laravel13` y empieza desde `git remote remove origin`. Ese ZIP ya incluye `.git` con los commits.
+> Si recibes el proyecto como ZIP con mi trabajo previo (plan + test), descomprímelo en `~/proyectos/bridgesnote-migracion` y empieza desde `git remote remove origin`. Ese ZIP ya incluye `.git` con los commits.
 
 ## 5. Migración paso a paso (un commit por etapa)
 
 ```bash
-cd ~/proyectos/bridgesnote-laravel13
+cd ~/proyectos/bridgesnote-migracion
 git switch -c migracion-laravel13
 ```
 
@@ -116,7 +116,7 @@ git switch -c migracion-laravel13
 ```bash
 cd ~/proyectos
 composer create-project laravel/laravel:^13.0 esqueleto-l13 --prefer-dist
-cd bridgesnote-laravel13
+cd bridgesnote-migracion
 
 # Quitar los archivos del framework viejo (se conservan .git, README.md y PLAN_MIGRACION.md)
 git ls-files | grep -v -E '^(README.md|PLAN_MIGRACION.md)$' | xargs git rm -q
