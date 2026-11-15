@@ -1,5 +1,7 @@
 # 🏫 Bridges Note - MINEDU ESCALE Bridge API
 
+**Autor de la migración:** Jhordy Antonio Salazar Ramos · Curso de Arquitectura de Software (UNAS)
+
 Microservicio y API REST en **Laravel 13** diseñado para sincronizar, estructurar y servir el catálogo oficial de instituciones educativas (colegios) y la división política/geográfica (regiones, provincias y distritos) del Perú, consumiendo directamente la API pública oficial de **MINEDU / ESCALE** (*Estadística de la Calidad Educativa*).
 
 ---
@@ -317,6 +319,8 @@ Cambios principales:
 - Se quitó la ruta `/user` con `auth:api`, que no se usaba.
 - Migraciones anónimas y tipos de retorno de PHP 8 en el código propio.
 - Se agregaron pruebas automáticas de los 4 endpoints (`php artisan test`).
+
+El análisis de los cambios de arquitectura está en [`ARQUITECTURA_CAMBIOS.md`](ARQUITECTURA_CAMBIOS.md).
 
 El estado original se conserva en el tag `laravel7-base`.
 
